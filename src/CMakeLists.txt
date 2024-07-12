@@ -850,10 +850,13 @@ else()
         add_definitions (${PLIBSYS_COMPILE_DEFS})
 endif()
 
-if (PLIBSYS_BUILD_SHARED OR PLIBSYS_BUILD_STATIC) #experiment
+if (PLIBSYS_BUILD_SHARED) #experiment
 	set_target_properties (plibsys PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR})
 	set_target_properties (plibsys PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_DIR})
 	set_target_properties (plibsys PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_DIR})
+elseif (PLIBSYS_BUILD_STATIC)
+	set_target_properties (plibsysstatic PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_DIR})
+	set_target_properties (plibsysstatic PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_DIR})
 endif()
 
 # OpenBSD uses a bit different library versioning
