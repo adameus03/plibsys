@@ -850,7 +850,7 @@ else()
         add_definitions (${PLIBSYS_COMPILE_DEFS})
 endif()
 
-if (PLIBSYS_BUILD_SHARED)
+if (PLIBSYS_BUILD_SHARED OR PLIBSYS_BUILD_STATIC) #experiment
 	set_target_properties (plibsys PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR})
 	set_target_properties (plibsys PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_DIR})
 	set_target_properties (plibsys PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_DIR})
