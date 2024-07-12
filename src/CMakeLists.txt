@@ -819,16 +819,18 @@ if (PLIBSYS_PLATFORM_DEFINES)
 endif()
 
 # Add targets
-add_library (plibsys SHARED ${PLIBSYS_SRCS} ${PLIBSYS_PLATFORM_SRCS} ${PLIBSYS_PUBLIC_HDRS} ${PLIBSYS_PRIVATE_HDRS})
-
+if (PLIBSYS_BUILD_SHARED)
+	add_library (plibsys SHARED ${PLIBSYS_SRCS} ${PLIBSYS_PLATFORM_SRCS} ${PLIBSYS_PUBLIC_HDRS} ${PLIBSYS_PRIVATE_HDRS})
+endif()
 if (PLIBSYS_BUILD_STATIC)
         add_library (plibsysstatic STATIC ${PLIBSYS_SRCS} ${PLIBSYS_PLATFORM_SRCS} ${PLIBSYS_PUBLIC_HDRS} ${PLIBSYS_PRIVATE_HDRS})
 endif()
 
 # Add include directories
 if (COMMAND target_include_directories)
-        target_include_directories (plibsys PUBLIC ${PLIBSYS_INCLUDE_DIRS})
-
+	if (PLIBSYS_BUILD_SHARED)
+		target_include_directories (plibsys PUBLIC ${PLIBSYS_INCLUDE_DIRS})
+	endif()
         if (PLIBSYS_BUILD_STATIC)
                 target_include_directories (plibsysstatic PUBLIC ${PLIBSYS_INCLUDE_DIRS})
         endif()
@@ -838,8 +840,9 @@ endif()
 
 # Add compile definitions
 if (COMMAND target_compile_definitions)
-        target_compile_definitions (plibsys PRIVATE ${PLIBSYS_COMPILE_DEFS})
-
+	if (PLIBSYS_BUILD_SHARED)
+		target_compile_definitions (plibsys PRIVATE ${PLIBSYS_COMPILE_DEFS})
+	endif()
         if (PLIBSYS_BUILD_STATIC)
                 target_compile_definitions (plibsysstatic PRIVATE ${PLIBSYS_COMPILE_DEFS})
         endif()
@@ -847,16 +850,19 @@ else()
         add_definitions (${PLIBSYS_COMPILE_DEFS})
 endif()
 
-set_target_properties (plibsys PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR})
-set_target_properties (plibsys PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_DIR})
-set_target_properties (plibsys PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_DIR})
+if (PLIBSYS_BUILD_SHARED)
+	set_target_properties (plibsys PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR})
+	set_target_properties (plibsys PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_DIR})
+	set_target_properties (plibsys PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_DIR})
+endif()
 
 # OpenBSD uses a bit different library versioning
 if (PLIBSYS_TARGET_OS STREQUAL openbsd)
         set (PLIBSYS_SOVERSION ${PLIBSYS_VERSION_MAJOR}.${PLIBSYS_VERSION_MINOR})
 endif()
 
-if (NOT PLIBSYS_TARGET_OS STREQUAL os2 AND NOT PLIBSYS_TARGET_OS STREQUAL amigaos)
+
+if (PLIBSYS_BUILD_SHARED AND NOT PLIBSYS_TARGET_OS STREQUAL os2 AND NOT PLIBSYS_TARGET_OS STREQUAL amigaos)
         set_target_properties (plibsys PROPERTIES SOVERSION ${PLIBSYS_SOVERSION})
 endif()
 
@@ -873,8 +879,9 @@ if (PLIBSYS_PLATFORM_CFLAGS)
                 set (PLIBSYS_PLATFORM_CFLAGS_STR "${PLIBSYS_PLATFORM_CFLAGS_STR} ${PLATFORM_CFLAG}")
         endforeach()
 
-        set_target_properties (plibsys PROPERTIES COMPILE_FLAGS "${PLIBSYS_PLATFORM_CFLAGS_STR}")
-
+	if (PLIBSYS_BUILD_SHARED)
+		set_target_properties (plibsys PROPERTIES COMPILE_FLAGS "${PLIBSYS_PLATFORM_CFLAGS_STR}")
+	endif()
         if (PLIBSYS_BUILD_STATIC)
                 set_target_properties (plibsysstatic PROPERTIES COMPILE_FLAGS "${PLIBSYS_PLATFORM_CFLAGS_STR}")
         endif()
@@ -885,23 +892,29 @@ if (PLIBSYS_PLATFORM_LDFLAGS)
                 set (PLIBSYS_PLATFORM_LDFLAGS_STR "${PLIBSYS_PLATFORM_LDFLAGS_STR} ${PLATFORM_LDFLAG}")
         endforeach()
 
-        set_target_properties (plibsys PROPERTIES LINK_FLAGS "${PLIBSYS_PLATFORM_LDFLAGS_STR}")
-
+	if (PLIBSYS_BUILD_SHARED)
+        	set_target_properties (plibsys PROPERTIES LINK_FLAGS "${PLIBSYS_PLATFORM_LDFLAGS_STR}")
+	endif()
         if (PLIBSYS_BUILD_STATIC)
                 set_target_properties (plibsysstatic PROPERTIES LINK_FLAGS "${PLIBSYS_PLATFORM_LDFLAGS_STR}")
         endif()
 endif()
 
-target_link_libraries (plibsys ${PLIBSYS_PLATFORM_LINK_LIBRARIES})
-
+if (PLIBSYS_BUILD_SHARED)
+	target_link_libraries (plibsys ${PLIBSYS_PLATFORM_LINK_LIBRARIES})
+endif()
 if (PLIBSYS_BUILD_STATIC)
         target_link_libraries (plibsysstatic ${PLIBSYS_PLATFORM_LINK_LIBRARIES})
 endif()
 
-if (PLIBSYS_BUILD_STATIC)
+if (PLIBSYS_BUILD_SHARED AND PLIBSYS_BUILD_STATIC)
         set (PLIBSYS_INSTALL_TARGETS plibsys plibsysstatic)
+elseif (PLIBSYS_BUILD_STATIC)
+        set (PLIBSYS_INSTALL_TARGETS plibsysstatic)
+elseif (PLIBSYS_BUILD_SHARED)
+	set (PLIBSYS_INSTALL_TARGETS plibsys)
 else()
-        set (PLIBSYS_INSTALL_TARGETS plibsys)
+	message ( FATAL_ERROR "One or both of the flags: PLIBSYS_BUILD_SHARED, PLIBSYS_BUILD_STATIC should be set to ON" )
 endif()
 
 if (PLIBSYS_NATIVE_WINDOWS)
@@ -985,6 +998,7 @@ SET (PLIBSYS_SUMMARY
         Platform libraries:     ${PLIBSYS_PLATFORM_LINK_LIBRARIES}
 
         Build static library:   ${PLIBSYS_BUILD_STATIC}
+	Build shared library:   ${PLIBSYS_BUILS_SHARED}   
         Build tests:            ${PLIBSYS_TESTS}
         Coverage support:       ${PLIBSYS_COVERAGE}
         Visibility:             ${PLIBSYS_VISIBILITY}
