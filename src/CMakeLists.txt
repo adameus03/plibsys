@@ -842,9 +842,9 @@ endif()
 
 # Add compile definitions
 if (COMMAND target_compile_definitions)
-	if (PLIBSYS_BUILD_SHARED)
+	#if (PLIBSYS_BUILD_SHARED) #experiment4
 		target_compile_definitions (plibsys PRIVATE ${PLIBSYS_COMPILE_DEFS})
-	endif()
+	#endif()
         if (PLIBSYS_BUILD_STATIC)
                 target_compile_definitions (plibsysstatic PRIVATE ${PLIBSYS_COMPILE_DEFS})
         endif()
