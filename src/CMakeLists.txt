@@ -891,9 +891,8 @@ if (PLIBSYS_PLATFORM_LDFLAGS)
                 set (PLIBSYS_PLATFORM_LDFLAGS_STR "${PLIBSYS_PLATFORM_LDFLAGS_STR} ${PLATFORM_LDFLAG}")
         endforeach()
 
-	if (PLIBSYS_BUILD_SHARED)
-        	set_target_properties (plibsys PROPERTIES LINK_FLAGS "${PLIBSYS_PLATFORM_LDFLAGS_STR}")
-	endif()
+	#experiment2
+        set_target_properties (plibsys PROPERTIES LINK_FLAGS "${PLIBSYS_PLATFORM_LDFLAGS_STR}")
         if (PLIBSYS_BUILD_STATIC)
                 set_target_properties (plibsysstatic PROPERTIES LINK_FLAGS "${PLIBSYS_PLATFORM_LDFLAGS_STR}")
         endif()
