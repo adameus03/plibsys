@@ -821,7 +821,7 @@ endif()
 # Add targets
 if (PLIBSYS_BUILD_SHARED)
 	add_library (plibsys SHARED ${PLIBSYS_SRCS} ${PLIBSYS_PLATFORM_SRCS} ${PLIBSYS_PUBLIC_HDRS} ${PLIBSYS_PRIVATE_HDRS})
-else()
+else() #experiment2
 	add_library (plibsys STATIC ${PLIBSYS_SRCS} ${PLIBSYS_PLATFORM_SRCS} ${PLIBSYS_PUBLIC_HDRS} ${PLIBSYS_PRIVATE_HDRS})
 endif()
 if (PLIBSYS_BUILD_STATIC)
@@ -830,9 +830,9 @@ endif()
 
 # Add include directories
 if (COMMAND target_include_directories)
-	if (PLIBSYS_BUILD_SHARED)
+	#if (PLIBSYS_BUILD_SHARED) #experiment3
 		target_include_directories (plibsys PUBLIC ${PLIBSYS_INCLUDE_DIRS})
-	endif()
+	#endif()
         if (PLIBSYS_BUILD_STATIC)
                 target_include_directories (plibsysstatic PUBLIC ${PLIBSYS_INCLUDE_DIRS})
         endif()
