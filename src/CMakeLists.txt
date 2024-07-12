@@ -880,9 +880,7 @@ if (PLIBSYS_PLATFORM_CFLAGS)
                 set (PLIBSYS_PLATFORM_CFLAGS_STR "${PLIBSYS_PLATFORM_CFLAGS_STR} ${PLATFORM_CFLAG}")
         endforeach()
 
-	if (PLIBSYS_BUILD_SHARED)
-		set_target_properties (plibsys PROPERTIES COMPILE_FLAGS "${PLIBSYS_PLATFORM_CFLAGS_STR}")
-	endif()
+	set_target_properties (plibsys PROPERTIES COMPILE_FLAGS "${PLIBSYS_PLATFORM_CFLAGS_STR}") #experiment
         if (PLIBSYS_BUILD_STATIC)
                 set_target_properties (plibsysstatic PROPERTIES COMPILE_FLAGS "${PLIBSYS_PLATFORM_CFLAGS_STR}")
         endif()
