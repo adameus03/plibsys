@@ -998,7 +998,7 @@ SET (PLIBSYS_SUMMARY
         Platform libraries:     ${PLIBSYS_PLATFORM_LINK_LIBRARIES}
 
         Build static library:   ${PLIBSYS_BUILD_STATIC}
-	Build shared library:   ${PLIBSYS_BUILS_SHARED}   
+	Build shared library:   ${PLIBSYS_BUILD_SHARED}   
         Build tests:            ${PLIBSYS_TESTS}
         Coverage support:       ${PLIBSYS_COVERAGE}
         Visibility:             ${PLIBSYS_VISIBILITY}
